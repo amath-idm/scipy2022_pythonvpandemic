@@ -194,6 +194,8 @@ However, we can take advantage of the fact that each state (such as agent age or
    Performance comparison for FPsim from an explicit loop-based approach compared to an array-based approach. :label:`perf`
 
 
+TODO: fix long lines
+
 
 .. code-block:: python
    
@@ -252,8 +254,10 @@ However, we can take advantage of the fact that each state (such as agent age or
    self.update_breastfeeding(lact_inds)
    self.check_conception(nonpreg_inds)  # Decide if conceives
 
-   
-skdfj
+
+
+
+
 
 
 
