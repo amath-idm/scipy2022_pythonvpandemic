@@ -59,7 +59,7 @@ Python vs. the pandemic: a case study in high-stakes software development
 Background
 ----------
 
-For decades :cite:`kerr2021`, scientists have been concerned about the possibility of another global pandemic on the scale of the 1918 flu [REF:pandemic]. Despite a number of "close calls", including outbreaks of SARS in 2002 [REF:sars], Ebola in 2014-2016 [REF:ebola], and flu outbreaks including 1957, 1968, and H1N1 in 2009 [REF:flu] – some of which led to 1 million or more deaths – the world had avoided experiencing a planetary-scale emergent pathogen since the HIV in the 1980s [REF:hiv]. 
+For decades, scientists have been concerned about the possibility of another global pandemic on the scale of the 1918 flu [REF:pandemic]. Despite a number of "close calls", including outbreaks of SARS in 2002 [REF:sars], Ebola in 2014-2016 [REF:ebola], and flu outbreaks including 1957, 1968, and H1N1 in 2009 [REF:flu] – some of which led to 1 million or more deaths – the world had avoided experiencing a planetary-scale emergent pathogen since the HIV in the 1980s [REF:hiv]. 
 
 In 2015, Bill Gates gave a TED talk stating that the world was not ready to deal with another pandemic [REF:bill]. While the Bill and Melinda Gates Foundation (BMGF) has not historically focused on pandemic preparedness, its expertise in disease surveillance, modeling, and drug discovery made it well placed to contribute to a global pandemic response plan. Founded in 2008, the Institute for Disease Modeling (IDM) has provided analytical support for BMGF and other global health partners, including efforts to eradicate malaria and polio. Since its founding, IDM has built up a portfolio of computational tools to understand, analyze, and predict the dynamics of different diseases.
 
@@ -197,32 +197,35 @@ TODO: fix long lines
    
    #%% Loop-based agent simulation
 
-   if self.alive:  # Do not move through step if not alive
+   if self.alive:  # Do not step if not alive
 
-    self.age_person()  # Age person in units of the timestep
-    self.check_mortality()  # Decide if person dies
+    self.age_person() # Age person
+    self.check_mortality()
     if not self.alive:
         return self.step_results
 
-    if self.sex == 0 and self.age < self.pars['age_limit_fecundity']:
+    cond =  self.age < self.pars['age_lim_fecund']
+    if self.sex == 0 and cond:
 
-        if self.pregnant:
-            self.check_delivery()  # Deliver with birth outcomes
-            self.update_pregnancy()  # Advance gestation in timestep
+        if self.preg:
+            self.check_delivery()
+            self.update_pregnancy()
             if not self.alive:
                 return self.step_results
 
-        if not self.pregnant:
+        if not self.preg:
             self.check_sexually_active()
-            if self.pars['method_age']<=self.age<self.pars['age_lim_fecund']:
+            cond1 = self.pars['method_age']<=self.age
+            cond2 = self.age<self.pars['age_lim_fecund']
+            if cond1 and cond2:
                 self.update_contraception(t, y)
             self.check_lam()
             if self.sexually_active:
-                self.check_conception()  # Decide if conceives
+                self.check_conception()
             if self.postpartum:
-                self.update_postpartum() # Updates postpartum counter
+                self.update_postpartum()
 
-        if self.lactating:
+        if self.lactate:
             self.update_breastfeeding()
 
 
@@ -230,25 +233,26 @@ TODO: fix long lines
 
    #%% Array-based agent simulation
    
-   alive_inds = sc.findinds(self.alive)
-   self.age_person(inds=alive_inds)  # Age person in units of the timestep
-   self.check_mortality(inds=alive_inds)  # Decide if person dies
+   alive_inds = sc.findinds(self.alive) # Living people
+   self.age_person(inds=alive_inds) # Age person
+   self.check_mortality(inds=alive_inds)
 
-   fbool = self.alive*(self.sex==0)*(self.age<self.pars['age_lim_fecund'])
-   fecund_inds  = sc.findinds(fbool)
-   preg_inds    = fecund_inds[sc.findinds(self.pregnant[fecund_inds])]
-   nonpreg_inds = np.setdiff1d(fecund_inds, preg_inds)
-   lact_inds    = fecund_inds[sc.findinds(self.lactating[fecund_inds])]
+   age_lim = self.age<self.pars['age_lim_fecund']
+   fbool   = self.alive*(self.sex==0)*age_lim
+   f_inds       = sc.findinds(fbool)
+   preg_inds    = f_inds[sc.findinds(self.preg[f_inds])]
+   nonpreg_inds = np.setdiff1d(f_inds, preg_inds)
+   lact_inds    = f_inds[sc.findinds(self.lactate[f_inds])]
 
    # Update everything
-   self.check_delivery(preg_inds)  # Deliver with birth outcomes
-   self.update_pregnancy(preg_inds)  # Advance gestation in timestep
+   self.check_delivery(preg_inds)
+   self.update_pregnancy(preg_inds)
    self.check_sexually_active(nonpreg_inds)
    self.update_contraception(nonpreg_inds)
    self.check_lam(nonpreg_inds)
-   self.update_postpartum(nonpreg_inds) # Updates postpartum counter
+   self.update_postpartum(nonpreg_inds)
    self.update_breastfeeding(lact_inds)
-   self.check_conception(nonpreg_inds)  # Decide if conceives
+   self.check_conception(nonpreg_inds)
 
 
 
@@ -295,7 +299,7 @@ These half-dozen contributors formed a core group (including the authors of this
 
 One surprising outcome was that even though Covasim is largely a software project, after the initial phase of development (i.e., the first 4-8 weeks), we found that relatively few tasks could be assigned to the developers as opposed to the epidemiologists on the project. We believe there are several reasons for this. First, epidemiologists tended to be much more aware of knowledge they were missing (e.g., what a particular NumPy function did), and were more readily able to fill that gap (e.g., look it up in the documentation or on Stack Overflow). By contrast, developers were less able to identify gaps in their knowledge and address them (e.g., by finding a study on Google Scholar). As a consequence, many of the epidemiologists' software skills improved markedly over the first few months, while the developers' epidemiology knowledge increased more slowly. Second, and more importantly, we found that once transparent and performant software engineering practices had been implemented, epidemiologists were able to successfully adapt them to new contexts even without complete understanding of the code. Thus, for developing a scientific software tool, it appears that optimal staffing would consist of a roughly equal ratio of developers and domain experts during the early development phase, followed by a rapid (on a timescale of weeks) ramp-down of developer resources.
 
-Acknowledging that Covasim's potential user base includes many people who have limited coding skills, we developed a three-tiered support model to maximize Covasim's real-world policy impact (Fig. :ref:`modes`). For "mode 1" engagements, we perform the work using Covasim ourselves; while this mode typically ensures high quality and efficiency, it is highly resource-constrained and thus used only for our highest-profile engagements, such as with Washington State [REF:natcomms]. For "mode 2" engagements, we offer our partners training on how to use Covasim, and let them lead analyses with our feedback; this is our most common and most impactful mode of engagement [REF:quang] [REF:jasmina] [REF:qld]. Finally, "mode 3" partnerships, in which we provide a tool that others download and use without our input, are the most common in the broader Python ecosystem. While this mode is by far the most scalable, in practice, relatively few (such as state health departments or ministries of health) have the time and internal technical capacity to use this mode.
+Acknowledging that Covasim's potential user base includes many people who have limited coding skills, we developed a three-tiered support model to maximize Covasim's real-world policy impact (Fig. :ref:`modes`). For "mode 1" engagements, we perform the work using Covasim ourselves; while this mode typically ensures high quality and efficiency, it is highly resource-constrained and thus used only for our highest-profile engagements, such as with Washington State :cite:`kerr2021`. For "mode 2" engagements, we offer our partners training on how to use Covasim, and let them lead analyses with our feedback; this is our most common and most impactful mode of engagement [REF:quang] [REF:jasmina] [REF:qld]. Finally, "mode 3" partnerships, in which we provide a tool that others download and use without our input, are the most common in the broader Python ecosystem. While this mode is by far the most scalable, in practice, relatively few (such as state health departments or ministries of health) have the time and internal technical capacity to use this mode.
 
 
 .. figure:: fig_modes.png
