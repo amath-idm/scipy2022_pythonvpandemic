@@ -176,8 +176,84 @@ As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines
 
 
 
+Array-based architecture
+++++++++++++++++++++++++
+
+In a typical agent-based simulation, the outermost loop is over time, while the inner loops iterate over different agents and agent states. For a simulation like Covasim, with roughly 700 (daily) timesteps, tens or hundreds of thousands of agents, and several dozen states, this requires on the order of one billion update steps.
+
+However, we can take advantage of the fact that each state (such as agent age or their infection status) has the same data type, and thus we can avoid an explicit loop over agents by instead representing agents as entries in NumPy vectors, and performing operations on these vectors. These two architectures are shown in Fig. :ref:`array`. Compared to the explicitly object-oriented implementation of an agent-based model, the array-based version is 1-2 orders of magnitude faster for population sizes larger than 10,000 agents (Fig. :ref:`perf`). Example code implementations of the two approaches (for FPsim) are shown below.
 
 
+.. figure:: fig_array.png
+
+   The standard object-oriented approach for implementing agent-based models (top), compared to the array-based approach used in Covasim (bottom). :label:`array`
+
+
+.. figure:: fig_perf.png
+
+   Performance comparison for FPsim from an explicit loop-based approach compared to an array-based approach. :label:`perf`
+
+
+
+.. code-block:: python
+   
+   #%% Loop-based agent simulation
+
+   if self.alive:  # Do not move through step if not alive
+
+    self.age_person()  # Age person in units of the timestep
+    self.check_mortality()  # Decide if person dies
+    if not self.alive:
+        return self.step_results
+
+    if self.sex == 0 and self.age < self.pars['age_limit_fecundity']:
+
+        if self.pregnant:
+            self.check_delivery()  # Deliver with birth outcomes
+            self.update_pregnancy()  # Advance gestation in timestep
+            if not self.alive:
+                return self.step_results
+
+        if not self.pregnant:
+            self.check_sexually_active()
+            if self.pars['method_age']<=self.age<self.pars['age_lim_fecund']:
+                self.update_contraception(t, y)
+            self.check_lam()
+            if self.sexually_active:
+                self.check_conception()  # Decide if conceives
+            if self.postpartum:
+                self.update_postpartum() # Updates postpartum counter
+
+        if self.lactating:
+            self.update_breastfeeding()
+
+
+.. code-block:: python
+
+   #%% Array-based agent simulation
+   
+   alive_inds = sc.findinds(self.alive)
+   self.age_person(inds=alive_inds)  # Age person in units of the timestep
+   self.check_mortality(inds=alive_inds)  # Decide if person dies
+
+   fbool = self.alive*(self.sex==0)*(self.age<self.pars['age_lim_fecund'])
+   fecund_inds  = sc.findinds(fbool)
+   preg_inds    = fecund_inds[sc.findinds(self.pregnant[fecund_inds])]
+   nonpreg_inds = np.setdiff1d(fecund_inds, preg_inds)
+   lact_inds    = fecund_inds[sc.findinds(self.lactating[fecund_inds])]
+
+   # Update everything
+   self.check_delivery(preg_inds)  # Deliver with birth outcomes
+   self.update_pregnancy(preg_inds)  # Advance gestation in timestep
+   self.check_sexually_active(nonpreg_inds)
+   self.update_contraception(nonpreg_inds)
+   self.check_lam(nonpreg_inds)
+   self.update_postpartum(nonpreg_inds) # Updates postpartum counter
+   self.update_breastfeeding(lact_inds)
+   self.check_conception(nonpreg_inds)  # Decide if conceives
+
+   
+skdfj
 
 
 
