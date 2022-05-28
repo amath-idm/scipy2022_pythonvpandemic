@@ -118,11 +118,48 @@ Covasim is a standard susceptible-infected-exposed-recovered (SEIR) model (Fig. 
 The first principle of Covasim's design philosophy is that "Common tasks should be simple" – for example, defining parameters, running a simulation, and plotting results. The following example illustrates this principle: it creates a simulation with a custom parameter value, runs it, and plots the results:
 
 
+.. code-block:: python
+
+   import covasim as cv
+   cv.Sim(pop_size=100e3).run().plot()
+
+
+The second principle of the design philosophy is "Uncommon tasks can't always be simple, but they still should be possible". Examples include writing a custom goodness-of-fit function or defining a new population structure. To some extent, the second principle is at odds with the first, since the more flexibility an interface has, typically the more complex it is as well.
+
+For example, the following code and Fig. :ref:`example` shows the result of running two simulations to determine the impact of a custom intervention aimed at protecting the elderly:
+
+
+.. code-block:: python
+
+   import covasim as cv
+
+   # Custom intervention
+   def elderly(sim):
+       if sim.t == sim.day('2020-04-01'):
+           elderly = sim.people.age>70
+           sim.people.rel_sus[elderly] = 0.0
+
+   pars = dict(
+       pop_type = 'hybrid', # More realistic population
+       location = 'japan', # Japan characteristics
+       pop_size = 50e3, # Have 50,000 people total
+       pop_infected = 100, # 100 infected people
+       n_days = 90, # Run for 90 days
+       verbose = 0, # Do not print output
+   )
+
+   # Running in parallel
+   label = 'Protect the elderly'
+   s1 = cv.Sim(pars, label='Default')
+   s2 = cv.Sim(pars, interventions=elderly, label=label)
+   msim = cv.parallel(s1, s2)
+   fig = msim.plot(['cum_deaths', 'cum_infections'])
 
 
 
+.. figure:: fig_example.png
 
-
+   Running a custom intervention in Covasim, illustrating the tradeoff between simplicity and flexibility. :label:`example`
 
 
 
