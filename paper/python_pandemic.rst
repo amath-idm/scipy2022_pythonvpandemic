@@ -48,7 +48,7 @@ Python vs. the pandemic: a case study in high-stakes software development
 
 .. class:: abstract
 
-   When it became clear in early 2020 that COVID-19 was going to be a major public health threat, politicians and public health officials turned to academic disease modelers like us for urgent guidance. Academic software development is typically a slow and haphazard process, and we realized that business-as-usual would not suffice for dealing with this crisis. Here we describe the case study of how we built Covasim (covasim.org), an agent-based model of COVID-19 epidemiology and public health interventions, by using standard Python libraries like NumPy, Numba, and SciPy along with less common ones like Sciris (sciris.org). Covasim was created in a few weeks, an order of magnitude faster than the typical model development process, and achieves performance comparable to C++ despite being written in pure Python. It has become one of the most widely adopted COVID models, and is used by researchers and policymakers in dozens of countries. Covasim's rapid development was enabled not only by leveraging the Python scientific computing ecosystem, but also by adopting coding practices and workflows that lowered the barriers to entry for scientific contributors without sacrificing either performance or rigor.
+   When it became clear in early 2020 that COVID-19 was going to be a major public health threat, politicians and public health officials turned to academic disease modelers like us for urgent guidance. Academic software development is typically a slow and haphazard process, and we realized that business-as-usual would not suffice for dealing with this crisis. Here we describe the case study of how we built Covasim (covasim.org), an agent-based model of COVID-19 epidemiology and public health interventions, by using standard Python libraries like NumPy and Numba, along with less common ones like Sciris (sciris.org). Covasim was created in a few weeks, an order of magnitude faster than the typical model development process, and achieves performance comparable to C++ despite being written in pure Python. It has become one of the most widely adopted COVID models, and is used by researchers and policymakers in dozens of countries. Covasim's rapid development was enabled not only by leveraging the Python scientific computing ecosystem, but also by adopting coding practices and workflows that lowered the barriers to entry for scientific contributors without sacrificing either performance or rigor.
 
 .. class:: keywords
 
@@ -59,9 +59,9 @@ Python vs. the pandemic: a case study in high-stakes software development
 Background
 ----------
 
-For decades, scientists have been concerned about the possibility of another global pandemic on the scale of the 1918 flu :cite:`garrett2005next`. Despite a number of "close calls", including outbreaks of SARS in 2002 :cite:`anderson2004epidemiology`, Ebola in 2014-2016 :cite:`who2014ebola`, and flu outbreaks including 1957, 1968, and H1N1 in 2009 :cite:`saunders2016reviewing` – some of which led to 1 million or more deaths – the world had avoided experiencing a planetary-scale emergent pathogen since the HIV in the 1980s :cite:`cohen2008spread`. 
+For decades, scientists have been concerned about the possibility of another global pandemic on the scale of the 1918 flu :cite:`garrett2005next`. Despite a number of "close calls" – including SARS in 2002 :cite:`anderson2004epidemiology`, Ebola in 2014-2016 :cite:`who2014ebola`, and flu outbreaks including 1957, 1968, and H1N1 in 2009 :cite:`saunders2016reviewing`, some of which led to 1 million or more deaths – the world had avoided experiencing a planetary-scale new pathogen since HIV spread globally in the 1980s :cite:`cohen2008spread`. 
 
-In 2015, Bill Gates gave a TED talk stating that the world was not ready to deal with another pandemic :cite:`hofman2020global`. While the Bill and Melinda Gates Foundation (BMGF) has not historically focused on pandemic preparedness, its expertise in disease surveillance, modeling, and drug discovery made it well placed to contribute to a global pandemic response plan. Founded in 2008, the Institute for Disease Modeling (IDM) has provided analytical support for BMGF and other global health partners, including efforts to eradicate malaria and polio. Since its founding, IDM has built up a portfolio of computational tools to understand, analyze, and predict the dynamics of different diseases.
+In 2015, Bill Gates gave a TED talk stating that the world was not ready to deal with another pandemic :cite:`hofman2020global`. While the Bill & Melinda Gates Foundation (BMGF) has not historically focused on pandemic preparedness, its expertise in disease surveillance, modeling, and drug discovery made it well placed to contribute to a global pandemic response plan. Founded in 2008, the Institute for Disease Modeling (IDM) has provided analytical support for BMGF (which it has been part of since 2020) and other global health partners, including efforts to eradicate malaria and polio. Since its creation, IDM has built up a portfolio of computational tools to understand, analyze, and predict the dynamics of different diseases.
 
 When "coronavirus disease 2019" (COVID-19) and the virus that causes it (SARS-CoV-2) were first identified in late 2019, our team began summarizing what was known about the virus :cite:`famulare2019ncov`. By early February 2020, even though it was more than a month before the WHO would declare a pandemic :cite:`medicine2020covid`, it had become clear that COVID-19 was emerging as a major public health threat. The outbreak on the Diamond Princess cruise ship :cite:`rocklov2020covid` was the impetus for us to start modeling COVID in detail. Specifically,  we needed a tool to (a) incorporate new data as soon as it became available, (b) explore policy scenarios, and (c) predict likely future epidemic trajectories.
 
@@ -88,7 +88,7 @@ Covasim, by contrast, had immediate real-world impact. The first version was rel
    Covasim releases since the start of the pandemic. :label:`releases`
 
 
-To date, Covasim has been downloaded from PyPI over 100,000 times :cite:`pepy`, used in dozens of academic studies :cite:`kerr2021`, and informed decision-making on every continent (Fig. :ref:`worldmap`), making it one of the most widely used Python-based COVID models. We believe key elements of its success include (a) the simplicity of its architecture, such as using a relatively small number of classes; (b) high performance, enabled by the use of NumPy arrays and Numba decorators; (c) our emphasis on prioritizing usability, including flexible type handling and careful choices of default settings. In the remainder of this paper, we outline these principles in more detail. Our aim is to provide a roadmap for how to quickly develop high-performance scientific computing libraries.
+To date, Covasim has been downloaded from PyPI over 100,000 times :cite:`pepy`, used in dozens of academic studies :cite:`kerr2021`, and informed decision-making on every continent (Fig. :ref:`worldmap`), making it one of the most widely used Python-based COVID models. We believe key elements of its success include (a) the simplicity of its architecture; (b) its high performance, enabled by the use of NumPy arrays and Numba decorators; and (c) our emphasis on prioritizing usability, including flexible type handling and careful choices of default settings. In the remainder of this paper, we outline these principles in more detail, in the hope that this will provide a useful roadmap for other groups wanting to quickly develop high-performance scientific computing libraries.
 
 
 .. figure:: fig_worldmap.png
@@ -106,7 +106,9 @@ Software architecture and implementation
 Covasim conceptual design and usage
 +++++++++++++++++++++++++++++++++++
 
-Covasim is a standard susceptible-infected-exposed-recovered (SEIR) model (Fig. :ref:`seir`). It is an agent-based model, meaning that individual people and their interactions with one another are simulated. The fundamental calculation that Covasim performs is to calculate the probability that a given person, on a given time step, will change from one state to another, such as from susceptible to infected (i.e., they were infected), from undiagnosed to diagnosed, or from critically ill to dead. Covasim is fully open-source and available on GitHub (http://covasim.org) or PyPI (``pip install covasim``), and comes with comprehensive documentation (http://docs.covasim.org).
+Covasim is a standard susceptible-infected-exposed-recovered (SEIR) model (Fig. :ref:`seir`). It is an agent-based model, meaning that individual people and their interactions with one another are simulated explicitly (rather than implicitly, as in a compartmental model).
+
+The fundamental calculation that Covasim performs is to calculate the probability that a given person, on a given time step, will change from one state to another, such as from susceptible to infected (i.e., that person was infected), from undiagnosed to diagnosed, or from critically ill to dead. Covasim is fully open-source and available on GitHub (http://covasim.org) and PyPI (``pip install covasim``), and comes with comprehensive documentation, including tutorials (http://docs.covasim.org).
 
 
 .. figure:: fig_seir.png
@@ -126,19 +128,20 @@ The first principle of Covasim's design philosophy is that "Common tasks should 
 
 The second principle of the design philosophy is "Uncommon tasks can't always be simple, but they still should be possible". Examples include writing a custom goodness-of-fit function or defining a new population structure. To some extent, the second principle is at odds with the first, since the more flexibility an interface has, typically the more complex it is as well.
 
-For example, the following code and Fig. :ref:`example` shows the result of running two simulations to determine the impact of a custom intervention aimed at protecting the elderly:
+To illustrate the tension between these two principles, the following code and Fig. :ref:`example` show the implementation and result of running two simulations to determine the impact of a custom intervention aimed at protecting the elderly:
 
 
 .. code-block:: python
 
    import covasim as cv
 
-   # Custom intervention
-   def elderly(sim):
+   # Define a custom intervention
+   def elderly(sim, old=70):
        if sim.t == sim.day('2020-04-01'):
-           elderly = sim.people.age>70
+           elderly = sim.people.age > old
            sim.people.rel_sus[elderly] = 0.0
 
+   # Set custom parameters
    pars = dict(
        pop_type = 'hybrid', # More realistic population
        location = 'japan', # Japan characteristics
@@ -148,7 +151,7 @@ For example, the following code and Fig. :ref:`example` shows the result of runn
        verbose = 0, # Do not print output
    )
 
-   # Running in parallel
+   # Run sims
    label = 'Protect the elderly'
    s1 = cv.Sim(pars, label='Default')
    s2 = cv.Sim(pars, interventions=elderly, label=label)
@@ -158,7 +161,7 @@ For example, the following code and Fig. :ref:`example` shows the result of runn
 
 .. figure:: fig_example.png
 
-   Running a custom intervention in Covasim, illustrating the tradeoff between simplicity and flexibility. :label:`example`
+   Illustrative result of a simulation in Covasim focused on exploring an intervention for protecting the elderly. :label:`example`
 
 
 
@@ -175,7 +178,7 @@ As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines
    :scale: 25%
    :figclass: w
 
-   Comparison of functionally identical code implemented with (left) and without (right) Sciris. :label:`sciris`
+   Comparison of functionally identical code implemented with Sciris (left) and without (right). :label:`sciris`
 
 
 
@@ -184,7 +187,7 @@ Array-based architecture
 
 In a typical agent-based simulation, the outermost loop is over time, while the inner loops iterate over different agents and agent states. For a simulation like Covasim, with roughly 700 (daily) timesteps, tens or hundreds of thousands of agents, and several dozen states, this requires on the order of one billion update steps.
 
-However, we can take advantage of the fact that each state (such as agent age or their infection status) has the same data type, and thus we can avoid an explicit loop over agents by instead representing agents as entries in NumPy vectors, and performing operations on these vectors. These two architectures are shown in Fig. :ref:`array`. Compared to the explicitly object-oriented implementation of an agent-based model, the array-based version is 1-2 orders of magnitude faster for population sizes larger than 10,000 agents (Fig. :ref:`perf`). Example code implementations of the two approaches (for FPsim) are shown below.
+However, we can take advantage of the fact that each state (such as agent age or their infection status) has the same data type, and thus we can avoid an explicit loop over agents by instead representing agents as entries in NumPy vectors, and performing operations on these vectors. These two architectures are shown in Fig. :ref:`array`. Compared to the explicitly object-oriented implementation of an agent-based model, the array-based version is 1-2 orders of magnitude faster for population sizes larger than 10,000 agents (Fig. :ref:`perf`). Example code implementations of the two approaches are shown below using the example of FPsim (which, like Covasim, was initially implemented using an object-oriented approach before being converted to an array-based approach).
 
 
 .. figure:: fig_array.png
@@ -194,10 +197,7 @@ However, we can take advantage of the fact that each state (such as agent age or
 
 .. figure:: fig_perf.png
 
-   Performance comparison for FPsim from an explicit loop-based approach compared to an array-based approach. :label:`perf`
-
-
-TODO: fix long lines
+   Performance comparison for FPsim from an explicit loop-based approach compared to an array-based approach, showing a factor of ~70 speed improvement for large population sizes. :label:`perf`
 
 
 .. code-block:: python
@@ -266,7 +266,7 @@ TODO: fix long lines
 Numba optimization
 ++++++++++++++++++
 
-Numba is a compiler that translates subsets of Python and NumPy into machine code :cite:`lam2015numba`. Each low-level numerical function was tested with and without Numba decoration; in some cases speed improvements were negligible, wile in other cases they were considerable. For example, the following function is roughly 10 times faster with the Numba decorator than without:
+Numba is a compiler that translates subsets of Python and NumPy into machine code :cite:`lam2015numba`. Each low-level numerical function was tested with and without Numba decoration; in some cases speed improvements were negligible, while in other cases they were considerable. For example, the following function is roughly 10 times faster with the Numba decorator than without:
 
 
 .. code-block:: python
@@ -278,7 +278,7 @@ Numba is a compiler that translates subsets of Python and NumPy into machine cod
 
 Since Covasim is stochastic, calculations rarely need to be exact; as a result, most numerical operations are performed as 32-bit operations.
 
-Together, these speed optimizations allow Covasim to run at speeds comparable to agent-based models implemented in C\+\+. Practically, this means that most users can run Covasim analyses on their laptops without needing to use cloud-based HPC resources.
+Together, these speed optimizations allow Covasim to run at speeds comparable to agent-based models implemented in C\+\+. Practically, this means that most users can run Covasim analyses on their laptops without needing to use cloud-based or HPC compute resources.
 
 
 
