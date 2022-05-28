@@ -73,19 +73,24 @@ The first step was to identify which software tool would form the best starting 
 
 As a result, we instead started developing Covasim ("COVID-19 Agent-based Simulator") from a nascent agent-based model written in Python, LEMOD-FP ("Light"-EMOD for Family Planning). LEMOD-FP was used to model reproductive health choices of women in Senegal, and this model had in turn been based on an even simpler agent-based model of measles vaccination programs in Nigeria ("Value-of-information simulator" or VoISim). The timeline and interrelations between IDM's software ecosystem are shown in Fig. :ref:`ecosystem`.
 
+
 .. figure:: fig_ecosystem.png
 
    IDM's software ecosystem. :label:`ecosystem`
+
 
 Parallel to the development of Covasim, other research teams at IDM developed their own COVID models, including one based on the EMOD framework [REF:emod], and one based on an earlier influenza model [REF:corvid]. However, while both of these models saw use in academic contexts [REF:emod-rural] [REF:corvid-lancet], neither was able to incorporate new features quickly enough, or was easy enough to use, for widespread adoption in a policy context.
 
 Covasim, by contrast, had immediate real-world impact. The first version was released on 10 March 2020, and on 12 March 2020, its output was presented by Governor Jay Inslee of Washington State as justification for school closures and social distancing measures [REF:inslee]. Since the early days of the pandemic, Covasim releases have coincided with major events in the pandemic, especially the identification of new variants of concern (Fig. :ref:`releases`). Covasim was quickly adopted globally, including applications in the UK regarding school closures [REF:jasmina], Australia regarding outbreak control [REF:robyn], and Vietnam regarding lockdown measures [REF:quang]. 
 
+
 .. figure:: fig_releases.png
 
    Covasim releases since the start of the pandemic. :label:`releases`
 
+
 To date, Covasim has been downloaded from PyPI over 100,000 times [REF:pypi], used in dozens of academic studies [REF:natcomms], and informed decision-making on every continent (Fig. :ref:`worldmap`). We believe key elements of its success include (a) the simplicity of its architecture, such as using a relatively small number of classes; (b) high performance, enabled by the use of NumPy arrays and Numba decorators; (c) our emphasis on prioritizing usability, including flexible type handling and careful choices of default settings. In the remainder of this paper, we outline these principles in more detail. Our aim is to provide a roadmap for how to quickly develop high-performance scientific computing libraries.
+
 
 .. figure:: fig_worldmap.png
    :align: center
@@ -93,6 +98,38 @@ To date, Covasim has been downloaded from PyPI over 100,000 times [REF:pypi], us
    :figclass: w
 
    Covasim releases since the start of the pandemic. :label:`worldmap`
+
+
+
+Software architecture and implementation
+----------------------------------------
+
+Covasim conceptual design and usage
++++++++++++++++++++++++++++++++++++
+
+Covasim is a standard susceptible-infected-exposed-recovered (SEIR) model (Fig. :ref:`seir`). It is an agent-based model, meaning that individual people and their interactions with one another are simulated. The fundamental calculation that Covasim performs is to calculate the probability that a given person, on a given time step, will change from one state to another, such as from susceptible to infected (i.e., they were infected), from undiagnosed to diagnosed, or from critically ill to dead. Covasim is fully open-source and available on GitHub (http://covasim.org) or PyPI (``pip install covasim``), and comes with comprehensive documentation (http://docs.covasim.org).
+
+
+.. figure:: fig_seir.png
+
+   Basic Covasim disease model. The blue arrow shows the process of reinfection. :label:`seir`
+
+
+The first principle of Covasim's design philosophy is that "Common tasks should be simple" – for example, defining parameters, running a simulation, and plotting results. The following example illustrates this principle: it creates a simulation with a custom parameter value, runs it, and plots the results:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 Bibliographies, citations and block quotes
