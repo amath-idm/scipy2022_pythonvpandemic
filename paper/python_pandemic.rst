@@ -1,44 +1,62 @@
-:author: Gaius Caesa
-:email: jj@rome.it
-:institution: Senate House, S.P.Q.R.
-:institution: Egyptian Embassy, S.P.Q.R.
+:author: Cliff Kerr 
+:email: cliff@covasim.org
+:institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
+:institution: School of Physics, University of Sydney
 
-:author: Mark Anthony
-:email: mark37@rome.it
-:institution: Egyptian Embassy, S.P.Q.R.
+:author: Robyn Stuart 
+:email: robyn@math.ku.dk
+:institution: Department of Mathematical Sciences, University of Copenhagen
+:institution: Burnet Institute
 
-:author: Jarrod Millman
-:email: millman@rome.it
-:institution: Egyptian Embassy, S.P.Q.R.
-:institution: Yet another place, S.P.Q.R.
+:author: Dina Mistry 
+:email: dina.c.mistry@gmail.com
+:institution: Twitter
 
-:author: Brutus
-:email: brutus@rome.it
-:institution: Unaffiliated
+:author: Romesh Abeysuriya 
+:email: romesh.abeysuriya@burnet.edu.au
+:institution: Burnet Institute
+
+:author: Jamie Cohen 
+:email: jamie.cohen@gatesfoundation.org
+:institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
+
+:author: Lauren George 
+:email: lauren.george@live.com
+:institution: Microsoft
+
+:author: Michał Jastrzębski 
+:email: inc007@gmail.com
+:institution: GitHub
+
+:author: Michael Famulare 
+:email: mike.famulare@gatesfoundation.org
+:institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
+
+:author: Edward Wenger 
+:email: edward.wenger@gatesfoundation.org
+:institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
+
+:author: Daniel Klein 
+:email: daniel.klein@gatesfoundation.org
+:institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
+
+
+
+
 :bibliography: python_pandemic
 
 
-:video: http://www.youtube.com/watch?v=dhRUe-gz690
-
-------------------------------------------------
-A Numerical Perspective to Terraforming a Desert
-------------------------------------------------
+-------------------------------------------------------------------------
+Python vs. the pandemic: a case study in high-stakes software development
+-------------------------------------------------------------------------
 
 .. class:: abstract
 
-   A short version of the long version that is way too long to be written as a
-   short version anyway.  Still, when considering the facts from first
-   principles, we find that the outcomes of this introspective approach is
-   compatible with the guidelines previously established.
-
-   In such an experiment it is then clear that the potential for further
-   development not only depends on previous relationships found but also on
-   connections made during exploitation of this novel new experimental
-   protocol.
+   When it became clear in early 2020 that COVID-19 was going to be a major public health threat, politicians and public health officials turned to academic disease modelers like us for urgent guidance. Academic software development is typically a slow and haphazard process, and we realized that business-as-usual would not suffice for dealing with this crisis. Here we describe the case study of how we built Covasim (covasim.org), an agent-based model of COVID-19 epidemiology and public health interventions, by using standard Python libraries like NumPy, Numba, and SciPy along with less common ones like Sciris (sciris.org). Covasim was created in a few weeks, an order of magnitude faster than the typical model development process, and achieves performance comparable to C++ despite being written in pure Python. It has become one of the most widely adopted COVID models, and is used by researchers and policymakers in dozens of countries. Covasim's rapid development was enabled not only by leveraging the Python scientific computing ecosystem, but also by adopting coding practices and workflows that lowered the barriers to entry for scientific contributors without sacrificing either performance or rigor.
 
 .. class:: keywords
 
-   terraforming, desert, numerical perspective
+   COVID-19, SARS-CoV-2, Epidemiology, Mathematical modeling, NumPy, Numba, Sciris
 
 Temp
 ----
