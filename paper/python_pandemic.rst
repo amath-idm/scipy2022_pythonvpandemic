@@ -1,9 +1,9 @@
-:author: Cliff Kerr 
+:author: Cliff C. Kerr 
 :email: cliff@covasim.org
 :institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
 :institution: School of Physics, University of Sydney
 
-:author: Robyn Stuart 
+:author: Robyn M. Stuart 
 :email: robyn@math.ku.dk
 :institution: Department of Mathematical Sciences, University of Copenhagen
 :institution: Burnet Institute
@@ -12,11 +12,11 @@
 :email: dina.c.mistry@gmail.com
 :institution: Twitter
 
-:author: Romesh Abeysuriya 
+:author: Romesh G. Abeysuriya 
 :email: romesh.abeysuriya@burnet.edu.au
 :institution: Burnet Institute
 
-:author: Jamie Cohen 
+:author: Jamie A. Cohen 
 :email: jamie.cohen@gatesfoundation.org
 :institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
 
@@ -36,7 +36,7 @@
 :email: edward.wenger@gatesfoundation.org
 :institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
 
-:author: Daniel Klein 
+:author: Daniel J. Klein 
 :email: daniel.klein@gatesfoundation.org
 :institution: Institute for Disease Modeling, Bill & Melinda Gates Foundation
 :bibliography: mybib
@@ -71,6 +71,9 @@ As a result, we instead started developing Covasim ("COVID-19 Agent-based Simula
 
 
 .. figure:: fig_ecosystem.png
+   :align: center
+   :scale: 20%
+   :figclass: w
 
    IDM's software ecosystem. :label:`ecosystem`
 
@@ -107,6 +110,7 @@ Covasim is a standard susceptible-infected-exposed-recovered (SEIR) model (Fig. 
 
 
 .. figure:: fig_seir.png
+   :scale: 15%
 
    Basic Covasim disease model. The blue arrow shows the process of reinfection. :label:`seir`
 
@@ -167,6 +171,9 @@ As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines
 
 
 .. figure:: fig_sciris.png
+   :align: center
+   :scale: 25%
+   :figclass: w
 
    Comparison of functionally identical code implemented with (left) and without (right) Sciris. :label:`sciris`
 
@@ -303,6 +310,9 @@ Acknowledging that Covasim's potential user base includes many people who have l
 
 
 .. figure:: fig_modes.png
+   :align: center
+   :scale: 20%
+   :figclass: w
 
    The three pathways to impact with Covasim, from high bandwidth/small scale to low bandwidth/large scale. IDM: Institute for Disease Modeling; OSS: open-source software; GPG: global public good; PyPI: Python Package Index. :label:`modes`
 
