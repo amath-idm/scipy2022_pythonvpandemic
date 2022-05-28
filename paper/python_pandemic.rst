@@ -156,10 +156,24 @@ For example, the following code and Fig. :ref:`example` shows the result of runn
    fig = msim.plot(['cum_deaths', 'cum_infections'])
 
 
-
 .. figure:: fig_example.png
 
    Running a custom intervention in Covasim, illustrating the tradeoff between simplicity and flexibility. :label:`example`
+
+
+
+Simplifications using Sciris
+++++++++++++++++++++++++++++
+
+A key component of Covasim's architecture is heavy reliance on Sciris [REF:sciris], a library of functions for scientific computing that provide additional flexibility and ease-of-use on top of NumPy, SciPy, and Matplotlib, including parallel computing, array operations, and high-performance container datatypes. 
+
+As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines of code required to perform common scientific tasks, allowing the user to focus on the code's scientific logic rather than the low-level implementation. Key Covasim features that rely on Sciris include: ensuring consistent list, dictionary, array types; referencing ordered dictionary elements by index; handling and interconverting dates; saving and loading files; and running simulations in parallel.
+
+
+.. figure:: fig_sciris.png
+
+   Comparison of functionally identical code implemented with (left) and without (right) Sciris. :label:`sciris`
+
 
 
 
