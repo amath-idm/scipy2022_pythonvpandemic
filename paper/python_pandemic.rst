@@ -259,6 +259,25 @@ TODO: fix long lines
 
 
 
+Numba optimization
+++++++++++++++++++
+
+Numba is a compiler that translates subsets of Python and NumPy into machine code [REF:numba]. Each low-level numerical function was tested with and without Numba decoration; in some cases speed improvements were negligible, wile in other cases they were considerable. For example, the following function is roughly 10 times faster with the Numba decorator than without:
+
+
+
+.. code-block:: python
+
+   @nb.njit((nb.int32, nb.int32), cache=True)
+   def choose_r(max_n, n):
+       return np.random.choice(max_n, n, replace=True)
+
+
+Since Covasim is stochastic, calculations rarely need to be exact; as a result, most numerical operations are performed as 32-bit operations.
+
+
+Together, these speed optimizations allow Covasim to run at speeds comparable to agent-based models implemented in C\+\+. Practically, this means that most users can run Covasim analyses on their laptops without needing to use cloud-based HPC resources.
+
 
 
 
