@@ -240,26 +240,26 @@ TODO: fix long lines
 
    #%% Array-based agent simulation
    
-   alive_inds = sc.findinds(self.alive) # Living people
-   self.age_person(inds=alive_inds) # Age person
-   self.check_mortality(inds=alive_inds)
+   alive_i = sc.findinds(self.alive)
+   self.age_person(inds=alive_i)
+   self.check_mortality(inds=alive_i)
 
    age_lim = self.age<self.pars['age_lim_fecund']
-   fbool   = self.alive*(self.sex==0)*age_lim
-   f_inds       = sc.findinds(fbool)
-   preg_inds    = f_inds[sc.findinds(self.preg[f_inds])]
-   nonpreg_inds = np.setdiff1d(f_inds, preg_inds)
-   lact_inds    = f_inds[sc.findinds(self.lactate[f_inds])]
+   fem_bool = self.alive*(self.sex==0)*age_lim
+   fem_i = sc.findinds(fem_bool)
+   preg_i = fem_i[sc.findinds(self.preg[fem_i])]
+   lact_i = fem_i[sc.findinds(self.lactate[fem_i])]
+   nonpreg_i = np.setdiff1d(fem_i, preg_i)
 
    # Update everything
-   self.check_delivery(preg_inds)
-   self.update_pregnancy(preg_inds)
-   self.check_sexually_active(nonpreg_inds)
-   self.update_contraception(nonpreg_inds)
-   self.check_lam(nonpreg_inds)
-   self.update_postpartum(nonpreg_inds)
-   self.update_breastfeeding(lact_inds)
-   self.check_conception(nonpreg_inds)
+   self.check_delivery(preg_i)
+   self.update_pregnancy(preg_i)
+   self.check_sexually_active(nonpreg_i)
+   self.update_contraception(nonpreg_i)
+   self.check_lam(nonpreg_i)
+   self.update_postpartum(nonpreg_i)
+   self.update_breastfeeding(lact_i)
+   self.check_conception(nonpreg_i)
 
 
 
@@ -306,7 +306,7 @@ These half-dozen contributors formed a core group (including the authors of this
 
 One surprising outcome was that even though Covasim is largely a software project, after the initial phase of development (i.e., the first 4-8 weeks), we found that relatively few tasks could be assigned to the developers as opposed to the epidemiologists on the project. We believe there are several reasons for this. First, epidemiologists tended to be much more aware of knowledge they were missing (e.g., what a particular NumPy function did), and were more readily able to fill that gap (e.g., look it up in the documentation or on Stack Overflow). By contrast, developers were less able to identify gaps in their knowledge and address them (e.g., by finding a study on Google Scholar). As a consequence, many of the epidemiologists' software skills improved markedly over the first few months, while the developers' epidemiology knowledge increased more slowly. Second, and more importantly, we found that once transparent and performant software engineering practices had been implemented, epidemiologists were able to successfully adapt them to new contexts even without complete understanding of the code. Thus, for developing a scientific software tool, it appears that optimal staffing would consist of a roughly equal ratio of developers and domain experts during the early development phase, followed by a rapid (on a timescale of weeks) ramp-down of developer resources.
 
-Acknowledging that Covasim's potential user base includes many people who have limited coding skills, we developed a three-tiered support model to maximize Covasim's real-world policy impact (Fig. :ref:`modes`). For "mode 1" engagements, we perform the work using Covasim ourselves; while this mode typically ensures high quality and efficiency, it is highly resource-constrained and thus used only for our highest-profile engagements, such as with Washington State :cite:`kerr2021`. For "mode 2" engagements, we offer our partners training on how to use Covasim, and let them lead analyses with our feedback; this is our most common and most impactful mode of engagement [REF:quang] [REF:jasmina] [REF:qld]. Finally, "mode 3" partnerships, in which we provide a tool that others download and use without our input, are the most common in the broader Python ecosystem. While this mode is by far the most scalable, in practice, relatively few (such as state health departments or ministries of health) have the time and internal technical capacity to use this mode.
+Acknowledging that Covasim's potential user base includes many people who have limited coding skills, we developed a three-tiered support model to maximize Covasim's real-world policy impact (Fig. :ref:`modes`). For "mode 1" engagements, we perform the work using Covasim ourselves; while this mode typically ensures high quality and efficiency, it is highly resource-constrained and thus used only for our highest-profile engagements, such as with Washington State :cite:`kerr2021`. For "mode 2" engagements, we offer our partners training on how to use Covasim, and let them lead analyses with our feedback; this is our most common and most impactful mode of engagement :cite:`pham2021estimating`:cite:`panovska2020determining` :cite:`sanz2022risk`. Finally, "mode 3" partnerships, in which we provide a tool that others download and use without our input, are the most common in the broader Python ecosystem. While this mode is by far the most scalable, in practice, relatively few (such as state health departments or ministries of health) have the time and internal technical capacity to use this mode.
 
 
 .. figure:: fig_modes.png
@@ -321,8 +321,8 @@ Acknowledging that Covasim's potential user base includes many people who have l
 Future directions
 -----------------
 
-While the need for COVID modeling is hopefully starting to decrease, we and our collaborators are continuing development of Covasim by updating parameters with the latest scientific evidence, implementing new immune dynamics [REF:jamie], and providing other usability and bugfix updates. We also continue to provide support and training workshops (including, for the first time, in person).
+While the need for COVID modeling is hopefully starting to decrease, we and our collaborators are continuing development of Covasim by updating parameters with the latest scientific evidence, implementing new immune dynamics :cite:`cohen2021mechanistic`, and providing other usability and bugfix updates. We also continue to provide support and training workshops (including, for the first time, in person).
 
-We are using what we learned during the development of Covasim to build a broader suite of Python-based disease modeling tools (tentatively named "\*-sim" or "Starsim"). The suite of Starsim tools under development includes models for family planning [REF:fp-poster], polio, respiratory syncytial virus (RSV), and human papillomavirus (HPV). To date, each tool in this suite uses an independent codebase, and is related to Covasim only through the shared design principles described above, and by having used the Covasim codebase as the starting point for development. 
+We are using what we learned during the development of Covasim to build a broader suite of Python-based disease modeling tools (tentatively named "\*-sim" or "Starsim"). The suite of Starsim tools under development includes models for family planning :cite:`o2022fpsim`, polio, respiratory syncytial virus (RSV), and human papillomavirus (HPV). To date, each tool in this suite uses an independent codebase, and is related to Covasim only through the shared design principles described above, and by having used the Covasim codebase as the starting point for development. 
 
 A major open question is whether the disease dynamics implemented in Covasim and these related models have sufficient overlap to be refactored into a single disease-agnostic modeling library, which the disease-specific modeling libraries would then import. This "core and specialization" approach was adopted by EMOD and Atomica, and while both frameworks continue to be used, neither has been broadly adapted within the disease modeling community. The alternative approach, currently used by the Starsim suite, is for each disease model to be a self-contained library. A shared library would reduce code duplication, and allow new features and bugfixes to be immediately rolled out to multiple models simultaneously. However, it would also increase interdependencies that would have the effect of increasing code complexity, increasing the risk of introducing subtle bugs. Which of these two options is preferable likely depends on the speed with which new disease models need to be implemented. We hope that for the foreseeable future, none will need to be implemented as quickly as COVID.
