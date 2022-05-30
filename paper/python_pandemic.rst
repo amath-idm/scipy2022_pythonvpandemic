@@ -192,65 +192,48 @@ However, we can take advantage of the fact that each state (such as agent age or
 
 
 .. code-block:: python
-   
-   #%% Loop-based agent simulation
 
-   if self.alive:  # Do not step if not alive
+    #%% Object-based agent simulation
 
-    self.age_person() # Age person
-    self.check_mortality()
-    if not self.alive:
-        return self.step_results
+    # Person methods
+    def age_person(self):
+        self.age += 1
+        return
 
-    cond =  self.age < self.pars['age_lim_fecund']
-    if self.sex == 0 and cond:
+    def check_died(self):
+        rand = np.random.random()
+        if rand < self.death_prob:
+            self.alive = False
+        return
 
-        if self.preg:
-            self.check_delivery()
-            self.update_pregnancy()
-            if not self.alive:
-                return self.step_results
-
-        if not self.preg:
-            self.check_sexually_active()
-            cond1 = self.pars['method_age']<=self.age
-            cond2 = self.age<self.pars['age_lim_fecund']
-            if cond1 and cond2:
-                self.update_contraception(t, y)
-            self.check_lam()
-            if self.sexually_active:
-                self.check_conception()
-            if self.postpartum:
-                self.update_postpartum()
-
-        if self.lactate:
-            self.update_breastfeeding()
+    # Object-based sim integration loop
+    for t in self.time_vec:
+        for person in self.people:
+            if person.alive:
+                person.age_person()
+                person.check_died()
 
 
 .. code-block:: python
 
-   #%% Array-based agent simulation
-   
-   alive_i = sc.findinds(self.alive)
-   self.age_person(inds=alive_i)
-   self.check_mortality(inds=alive_i)
+    #%% Array-based agent simulation
 
-   age_lim = self.age<self.pars['age_lim_fecund']
-   fem_bool = self.alive*(self.sex==0)*age_lim
-   fem_i = sc.findinds(fem_bool)
-   preg_i = fem_i[sc.findinds(self.preg[fem_i])]
-   lact_i = fem_i[sc.findinds(self.lactate[fem_i])]
-   nonpreg_i = np.setdiff1d(fem_i, preg_i)
+    # People methods
+    def age_people(self, inds):
+        self.age[inds] += 1
+        return
 
-   # Update everything
-   self.check_delivery(preg_i)
-   self.update_pregnancy(preg_i)
-   self.check_sexually_active(nonpreg_i)
-   self.update_contraception(nonpreg_i)
-   self.check_lam(nonpreg_i)
-   self.update_postpartum(nonpreg_i)
-   self.update_breastfeeding(lact_i)
-   self.check_conception(nonpreg_i)
+    def check_died(self, inds):
+        rands = np.random.rand(len(inds))
+        died = rands < self.death_probs[inds]:
+        self.alive[inds[died]] = False
+        return
+
+    # Array-based sim integration loop
+    for t in self.time_vec:
+        alive_inds = sc.findinds(self.people.alive)
+        self.people.age_people(inds=alive_inds)
+        self.people.check_died(inds=alive_inds)
 
 
 
