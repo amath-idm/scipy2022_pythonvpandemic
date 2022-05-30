@@ -279,7 +279,7 @@ Lessons for scientific software development
 Accessible coding and design
 ++++++++++++++++++++++++++++
 
-Since Covasim was designed to be used by scientists and health officials, not developers, we made a number of design decisions that were aimed to improve accessibility to our audience, rather than follow common principles of good software design.
+Since Covasim was designed to be used by scientists and health officials, not developers, we made a number of design decisions that preferenced accessibility to our audience over other principles of good software design.
 
 First, Covasim is designed to have as flexible of user inputs as possible. For example, a date can be specified as an integer number of days from the start of the simulation, as a string (e.g. ``'2020-04-04'``), or as a ``datetime.datetime`` object. Similarly, numeric inputs that can have either one or multiple values (such as the change in transmission rate following one or multiple lockdowns) can be provided as a scalar, list, or NumPy array. As long as the input is unambiguous, we prioritized ease-of-use and simplicity of the interface over rigorous type checking. Since Covasim is a top-level library (i.e., it does not perform low-level functions as part of other libraries), this prioritization has been welcomed by its users.
 
