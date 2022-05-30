@@ -252,7 +252,7 @@ Numba is a compiler that translates subsets of Python and NumPy into machine cod
 
 Since Covasim is stochastic, calculations rarely need to be exact; as a result, most numerical operations are performed as 32-bit operations.
 
-Together, these speed optimizations allow Covasim to run at speeds comparable to agent-based models implemented in C\+\+. Practically, this means that most users can run Covasim analyses on their laptops without needing to use cloud-based or HPC compute resources.
+Together, these speed optimizations allow Covasim to run at roughly 5-10 million simulated person-days per second of CPU time -- a speed comparable to agent-based models implemented purely in C or C\+\+ :cite:`hinch2021openabm`. Practically, this means that most users can run Covasim analyses on their laptops without needing to use cloud-based or HPC compute resources.
 
 
 
