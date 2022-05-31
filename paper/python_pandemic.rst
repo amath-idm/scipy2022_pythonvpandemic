@@ -71,7 +71,9 @@ As a result, we instead started developing Covasim ("COVID-19 Agent-based Simula
 
 Parallel to the development of Covasim, other research teams at IDM developed their own COVID models, including one based on the EMOD framework, and one based on an earlier influenza model :cite:`chao2020modeling`. However, while both of these models saw use in academic contexts :cite:`selvaraj2022rural`:cite:`koo2020interventions`, neither were able to incorporate new features quickly enough, or were easy enough to use, for widespread adoption in a policy context.
 
-Covasim, by contrast, had immediate real-world impact. The first version was released on 10 March 2020, and on 12 March 2020, its output was presented by Governor Jay Inslee of Washington State as justification for school closures and social distancing measures :cite:`kerr2021`. Since the early days of the pandemic, Covasim releases have coincided with major events in the pandemic, especially the identification of new variants of concern (Fig. :ref:`releases`). Covasim was quickly adopted globally, including applications in the UK regarding school closures :cite:`panovska2020determining`, Australia regarding outbreak control :cite:`stuart2021role`, and Vietnam regarding lockdown measures :cite:`pham2021estimating`. 
+Covasim, by contrast, had immediate real-world impact. The first version was released on 10 March 2020, and on 12 March 2020, its output was presented by Washington State Governor Jay Inslee during a press conference as justification for school closures and social distancing measures :cite:`kerr2021`.
+
+Since the early days of the pandemic, Covasim releases have coincided with major events in the pandemic, especially the identification of new variants of concern (Fig. :ref:`releases`). Covasim was quickly adopted globally, including applications in the UK regarding school closures :cite:`panovska2020determining`, Australia regarding outbreak control :cite:`stuart2021role`, and Vietnam regarding lockdown measures :cite:`pham2021estimating`. 
 
 
 .. figure:: fig_releases.png
@@ -79,7 +81,7 @@ Covasim, by contrast, had immediate real-world impact. The first version was rel
    Covasim releases since the start of the pandemic. :label:`releases`
 
 
-To date, Covasim has been downloaded from PyPI over 100,000 times :cite:`pepy`, has been used in dozens of academic studies :cite:`kerr2021`, and informed decision-making on every continent (Fig. :ref:`worldmap`), making it one of the most widely used Python-based COVID models. We believe key elements of its success include (a) the simplicity of its architecture; (b) its high performance, enabled by the use of NumPy arrays and Numba decorators; and (c) our emphasis on prioritizing usability, including flexible type handling and careful choices of default settings. In the remainder of this paper, we outline these principles in more detail, in the hope that this will provide a useful roadmap for other groups wanting to quickly develop high-performance, easy-to-use scientific computing libraries.
+To date, Covasim has been downloaded from PyPI over 100,000 times :cite:`pepy`, has been used in dozens of academic studies :cite:`kerr2021`, and informed decision-making on every continent (Fig. :ref:`worldmap`), making it one of the most widely used COVID models. We believe key elements of its success include (a) the simplicity of its architecture; (b) its high performance, enabled by the use of NumPy arrays and Numba decorators; and (c) our emphasis on prioritizing usability, including flexible type handling and careful choices of default settings. In the remainder of this paper, we outline these principles in more detail, in the hope that this will provide a useful roadmap for other groups wanting to quickly develop high-performance, easy-to-use scientific computing libraries.
 
 
 .. figure:: fig_worldmap.png
