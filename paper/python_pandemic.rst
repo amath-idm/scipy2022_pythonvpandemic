@@ -197,45 +197,49 @@ However, we can take advantage of the fact that each state (such as agent age or
 
     #%% Object-based agent simulation
 
-    # Person methods
-    def age_person(self):
-        self.age += 1
-        return
+    class Person:
 
-    def check_died(self):
-        rand = np.random.random()
-        if rand < self.death_prob:
-            self.alive = False
-        return
+        # Person methods
+        def age_person(self):
+            self.age += 1
+            return
 
-    # Object-based sim integration loop
-    for t in self.time_vec:
-        for person in self.people:
-            if person.alive:
-                person.age_person()
-                person.check_died()
+        def check_died(self):
+            rand = np.random.random()
+            if rand < self.death_prob:
+                self.alive = False
+            return
+
+        # Object-based sim integration loop
+        for t in self.time_vec:
+            for person in self.people:
+                if person.alive:
+                    person.age_person()
+                    person.check_died()
 
 
 .. code-block:: python
 
     #%% Array-based agent simulation
 
-    # People methods
-    def age_people(self, inds):
-        self.age[inds] += 1
-        return
+    class People:
 
-    def check_died(self, inds):
-        rands = np.random.rand(len(inds))
-        died = rands < self.death_probs[inds]:
-        self.alive[inds[died]] = False
-        return
+        # People methods
+        def age_people(self, inds):
+            self.age[inds] += 1
+            return
 
-    # Array-based sim integration loop
-    for t in self.time_vec:
-        alive_inds = sc.findinds(self.people.alive)
-        self.people.age_people(inds=alive_inds)
-        self.people.check_died(inds=alive_inds)
+        def check_died(self, inds):
+            rands = np.random.rand(len(inds))
+            died = rands < self.death_probs[inds]:
+            self.alive[inds[died]] = False
+            return
+
+        # Array-based sim integration loop
+        for t in self.time_vec:
+            alive_inds = sc.findinds(self.people.alive)
+            self.people.age_people(inds=alive_inds)
+            self.people.check_died(inds=alive_inds)
 
 
 
