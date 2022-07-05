@@ -55,7 +55,7 @@ str_new = sc.sigfig(f_new, 2, sep=',')
 #%% Plot
 sc.options(dpi=200)
 
-pl.figure(figsize=(6.5,4.5))
+pl.figure(figsize=(6,4))
 c_old, c_new = sc.gridcolors(2)
 pl.loglog(old.x, old.y, 'o', c=c_old, label='Object-based implementation')
 pl.plot(old.x, line_old, c=c_old, label=f'{str_old} agent-years/s')
