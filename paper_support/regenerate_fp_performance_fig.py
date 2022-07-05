@@ -7,6 +7,7 @@ import sciris as sc
 import pylab as pl
 
 steal = True
+do_save = True
 
 xy = ['x','y']
 
@@ -37,28 +38,38 @@ else:
         y = np.array([     1.1745432 ,      1.14346839,      1.33408024,      1.38883035,    1.75606863,      2.35849328,      3.82156834,      5.75208543,    14.60438457, 25.81879406])
     ))
 
-f = 100/70
+f = 70
+ff = 100/f
 for d in [old, new]:
-    d.y *= f # Convert to 100 years from the original 70
+    d.y *= ff
 
-line_old = old.x/3.3e3*f
-line_new = new.x/210e3*f
+f_old = 2.8e3*ff
+f_new = 185e3*ff
+line_old = old.x/f_old*100
+line_new = new.x/f_new*100
+str_old = sc.sigfig(f_old, 2, sep=',')
+str_new = sc.sigfig(f_new, 2, sep=',')
 
 
 
 #%% Plot
 sc.options(dpi=200)
 
-pl.figure(figsize=(6,4))
-pl.loglog(old.x, old.y, 'o', label='Object-based implementation')
-pl.loglog(new.x, new.y, 'o', label='Array-based implementation')
-pl.plot(old.x, line_old, label='Object-based time (3,000 agent-years/s)')
-pl.plot(new.x, line_new, label='Array-based time (3,000 agent-years/s)')
+pl.figure(figsize=(6.5,4.5))
+c_old, c_new = sc.gridcolors(2)
+pl.loglog(old.x, old.y, 'o', c=c_old, label='Object-based implementation')
+pl.plot(old.x, line_old, c=c_old, label=f'{str_old} agent-years/s')
+pl.loglog(new.x, new.y, 'o', c=c_new, label='Array-based implementation')
+pl.plot(new.x, line_new, c=c_new, label=f'{str_new} agent-years/s')
 pl.xlabel('Number of agents in simulation')
-pl.ylabel('CPU time (s)')
-pl.legend()
+pl.ylabel('CPU time for 100 simulated years (s)')
+pl.ylim(bottom=1)
+pl.legend(frameon=False)
 for k in xy:
     sc.commaticks(axis=k)
-
+sc.boxoff()
 sc.figlayout()
 pl.show()
+
+if do_save:
+    sc.savefig('fig_perf.png')
