@@ -144,7 +144,7 @@ To illustrate the tension between these two principles, the following code and F
        verbose = 0, # Do not print output
    )
 
-   # Run sims
+   # Run multiple sims in parallel and plot key results
    label = 'Protect the elderly'
    s1 = cv.Sim(pars, label='Default')
    s2 = cv.Sim(pars, interventions=elderly, label=label)
