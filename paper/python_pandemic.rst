@@ -158,7 +158,7 @@ To illustrate the tension between these two principles, the following code and F
 
 Similar design philosophies have been articulated for other projects, such as Grails :cite:`abdul2009groovy` [#]_.
 
-.. [*] Other similar statements include "The manifesto of Matplotlib is: simple and common tasks should be simple to perform provide options for more complex tasks" (`Data Processing Using Python <https://pt.coursera.org/lecture/python-data-processing/2-fundamentals-of-python-plotting-xMQeE>`__) and "Simple, common tasks should be simple to perform; Options should be provided to enable more complex tasks" (`Instrumental <https://instrumental-lib.readthedocs.io/en/stable/developer.html>`__).
+.. [*] Other similar philosophical statements include "The manifesto of Matplotlib is: simple and common tasks should be simple to perform provide options for more complex tasks" (`Data Processing Using Python <https://pt.coursera.org/lecture/python-data-processing/2-fundamentals-of-python-plotting-xMQeE>`__) and "Simple, common tasks should be simple to perform; Options should be provided to enable more complex tasks" (`Instrumental <https://instrumental-lib.readthedocs.io/en/stable/developer.html>`__).
 
 
 
