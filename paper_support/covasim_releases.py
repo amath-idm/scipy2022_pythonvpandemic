@@ -3,14 +3,15 @@ Plot graph of Covasim releases over time.
 '''
 
 import numpy as np
+import pandas as pd
 import pylab as pl
 import sciris as sc
 import datetime as dt
 
 
+dosave = 0
+
 # Command: git tag -l --sort=creatordate --format='%(creatordate:raw)|%(refname:short)'
-
-
 tagdata = '''
 1583907967 -0700 | Mar 10 2020 | v0.1
 1584300920 -0700 | Mar 15 2020 | v0.4-oregon
@@ -103,6 +104,8 @@ vocs = sc.objdict({
     'Omicron VOC' : '2021-11-26',
 })
 
+covid = sc.load('covid_cases_deaths.obj')
+
 vals = sc.autolist()
 diffs = [0]
 stamps = sc.autolist()
@@ -116,28 +119,19 @@ vals = np.array(vals)
 vals -= vals[0]
 diffs = np.diff(vals)
 
-# Line of best fit
-m, b = np.polyfit(vals[1:], np.log(diffs), 1)
-x = np.arange(vals[0], vals[-1])
-xdates = sc.daterange(stamps[0], stamps[-1], asdate=True)
-y = np.exp(m*x + b)
-r2 = np.corrcoef(vals, np.exp(m*vals + b))[0,1]**2
 
 sc.options(dpi=150)
 pl.figure(figsize=(8,8))
 
 ax1 = pl.subplot(2,1,1)
-ax1.plot(stamps[1:], diffs, 'o', label='Covasim releases', alpha=0.5)
-ax1.plot(xdates, y, '--', c='k')
-ax1.set_title('Covasim releases over time\n', fontsize=14)
+ax1.plot(covid.date, sc.rolling(covid.deaths))
 sc.setylim(ax=ax1)
 
 ax2 = pl.subplot(2,1,2)
-ax2.semilogy(stamps[1:], diffs, 'o', alpha=0.5)
-ax2.plot(xdates, y, '--', label=f'Line of best fit,\ny ∝ e^{m:0.3f}x\nR² = {r2:0.2f}', c='k')
+ax2.semilogy(stamps[1:], diffs, 'o', alpha=0.5, label='Covasim releases')
 
 
-colors = sc.vectocolor(len(vocs), cmap='brg')
+colors = sc.vectocolor(len(vocs)+1, cmap='brg')
 for a,ax in enumerate([ax1, ax2]):
     if a==1: ax.set_xlabel('Date')
     ax.set_ylabel('Days since previous release')
@@ -145,11 +139,14 @@ for a,ax in enumerate([ax1, ax2]):
 
     for i,label,date in vocs.enumitems():
         label = label if a==0 else ''
-        ax.axvline(sc.date(date), label=label, c=colors[i])
+        x = sc.date(date)
+        ax.axvline(x, linestyle='--', label=label, c=colors[i])
+        ax.text(x, 1.0, label)
 
 ax1.legend(bbox_to_anchor=(0.08,0.95))
-ax2.legend(bbox_to_anchor=(0.6,0.5))
+ax2.legend(bbox_to_anchor=(0.6,0.5), frameon=1)
 sc.figlayout()
 
-sc.savefig('covasim-releases.png')
+if dosave:
+    sc.savefig('covasim-releases.png')
 pl.show()
