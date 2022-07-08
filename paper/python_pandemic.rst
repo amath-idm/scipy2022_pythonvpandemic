@@ -175,7 +175,7 @@ As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines
    :scale: 25%
    :figclass: w
 
-   Comparison of functionally identical code implemented with Sciris (left) and without (right). Figure adapted from sciris.org. :label:`sciris`
+   Comparison of functionally identical code implemented without Sciris (left) and with (right). Tasks that take 30 lines of code without Sciris can be accomplished in 7 lines with it. :label:`sciris`
 
 
 
