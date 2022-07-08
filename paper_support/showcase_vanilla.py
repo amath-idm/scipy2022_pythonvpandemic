@@ -6,6 +6,7 @@ npts = 50
 noisevals = np.linspace(0, 1, 11)
 
 def randwave(std):
+    np.random.seed() # Ensure differences between runs
     a = np.cos(np.linspace(xmin, xmax, npts))
     b = np.random.randn(npts)
     return a + b*std
@@ -15,7 +16,7 @@ import time
 import multiprocessing as mp
 import pickle
 import gzip
-import matplotlib.pyplot as pl
+import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D # Unused but must be imported
 
 # Start timing
@@ -44,8 +45,8 @@ for filename in filenames:
 
 # Create 3D plot
 data_array = np.array([data[filename] for filename in filenames])
-fig = pl.figure()
-ax = fig.gca(projection='3d')
+fig = plt.figure()
+ax = plt.axes(projection='3d')
 ax.view_init(elev=45, azim=30)
 ny,nx = np.array(data_array).shape
 x = np.arange(nx)

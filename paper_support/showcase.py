@@ -6,6 +6,7 @@ npts = 50
 noisevals = np.linspace(0, 1, 11)
 
 def randwave(std):
+    np.random.seed() # Ensure differences between runs
     a = np.cos(np.linspace(xmin, xmax, npts))
     b = np.random.randn(npts)
     return a + b*std
