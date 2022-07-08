@@ -167,7 +167,7 @@ Simplifications using Sciris
 
 A key component of Covasim's architecture is heavy reliance on Sciris (http://sciris.org) :cite:`sciris`, a library of functions for scientific computing that provide additional flexibility and ease-of-use on top of NumPy, SciPy, and Matplotlib, including parallel computing, array operations, and high-performance container datatypes. 
 
-As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines of code required to perform common scientific tasks, allowing the user to focus on the code's scientific logic rather than the low-level implementation. Key Covasim features that rely on Sciris include: ensuring consistent list, dictionary, array types; referencing ordered dictionary elements by index; handling and interconverting dates; saving and loading files; and running simulations in parallel.
+As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines of code required to perform common scientific tasks, allowing the user to focus on the code's scientific logic rather than the low-level implementation. Key Covasim features that rely on Sciris include: ensuring consistent dictionary, list, and array types (e.g., allowing the user to provide inputs as either lists or arrays); referencing ordered dictionary elements by index; handling and interconverting dates (e.g., allowing the user to provide either a date string or a ``datetime`` object); saving and loading files; and running simulations in parallel.
 
 
 .. figure:: fig_sciris.png
@@ -175,7 +175,7 @@ As shown in Fig. :ref:`sciris`, Sciris significantly reduces the number of lines
    :scale: 35%
    :figclass: w
 
-   Comparison of functionally identical code implemented without Sciris (left) and with (right). Tasks that take 30 lines of code without Sciris can be accomplished in 7 lines with it. :label:`sciris`
+   Comparison of functionally identical code implemented without Sciris (left) and with (right). In this example, tasks that together take 30 lines of code without Sciris can be accomplished in 7 lines with it. :label:`sciris`
 
 
 
