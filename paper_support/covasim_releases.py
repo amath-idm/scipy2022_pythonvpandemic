@@ -3,13 +3,12 @@ Plot graph of Covasim releases over time.
 '''
 
 import numpy as np
-import pandas as pd
 import pylab as pl
 import sciris as sc
 import datetime as dt
 
 
-dosave = 0
+dosave = 1
 
 # Command: git tag -l --sort=creatordate --format='%(creatordate:raw)|%(refname:short)'
 tagdata = '''
@@ -121,30 +120,39 @@ diffs = np.diff(vals)
 
 
 sc.options(dpi=150)
-pl.figure(figsize=(8,8))
+pl.figure(figsize=(7,7))
 
 ax1 = pl.subplot(2,1,1)
-ax1.plot(covid.date, sc.rolling(covid.deaths))
+ax1.plot(covid.date, sc.rolling(covid.deaths), 'k', lw=2.5, alpha=0.8)
+ax1.set_ylabel('Daily global reported COVID deaths')
 sc.setylim(ax=ax1)
+sc.commaticks(ax=ax1)
 
 ax2 = pl.subplot(2,1,2)
-ax2.semilogy(stamps[1:], diffs, 'o', alpha=0.5, label='Covasim releases')
+ax2.semilogy(stamps[1:], diffs, 'o', alpha=0.5, label='Covasim\nreleases')
+ax2.set_ylabel('Days since previous Covasim release')
 
 
-colors = sc.vectocolor(len(vocs)+1, cmap='brg')
+colors = sc.vectocolor(len(vocs)+1, cmap='parula')
 for a,ax in enumerate([ax1, ax2]):
-    if a==1: ax.set_xlabel('Date')
-    ax.set_ylabel('Days since previous release')
-    sc.dateformatter(ax)
+    sc.dateformatter(ax, start='2020-01-01', end='2022-04-01')
+    sc.boxoff(ax=ax)
 
     for i,label,date in vocs.enumitems():
         label = label if a==0 else ''
         x = sc.date(date)
         ax.axvline(x, linestyle='--', label=label, c=colors[i])
-        ax.text(x, 1.0, label)
+        if a==0:
+            yl = ax.get_ylim()
+            if i==1:
+                dx = sc.datedelta(days=-14)
+                dy = 0.03
+            else:
+                dx = sc.datedelta(days=0)
+                dy = 0
+            ax.text(x+dx, yl[1]*(1.03+dy), label, rotation=15, c=colors[i])
 
-ax1.legend(bbox_to_anchor=(0.08,0.95))
-ax2.legend(bbox_to_anchor=(0.6,0.5), frameon=1)
+ax2.legend(bbox_to_anchor=(0.6,0.25), frameon=1)
 sc.figlayout()
 
 if dosave:
