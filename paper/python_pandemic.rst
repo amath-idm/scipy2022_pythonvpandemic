@@ -100,9 +100,9 @@ Software architecture and implementation
 Covasim conceptual design and usage
 +++++++++++++++++++++++++++++++++++
 
-Covasim is a standard susceptible-infected-exposed-recovered (SEIR) model (Fig. :ref:`seir`). It is an agent-based model, meaning that individual people and their interactions with one another are simulated explicitly (rather than implicitly, as in a compartmental model).
+Covasim is a standard susceptible-exposed-infectious-recovered (SEIR) model (Fig. :ref:`seir`). As noted above, it is an agent-based model, meaning that individual people and their interactions with one another are simulated explicitly (rather than implicitly, as in a compartmental model).
 
-The fundamental calculation that Covasim performs is to calculate the probability that a given person, on a given time step, will change from one state to another, such as from susceptible to infected (i.e., that person was infected), from undiagnosed to diagnosed, or from critically ill to dead. Covasim is fully open-source and available on GitHub (http://covasim.org) and PyPI (``pip install covasim``), and comes with comprehensive documentation, including tutorials (http://docs.covasim.org).
+The fundamental calculation that Covasim performs is to determine the probability that a given person, on a given time step, will change from one state to another, such as from susceptible to exposed (i.e., that person was infected), from undiagnosed to diagnosed, or from critically ill to dead. Covasim is fully open-source and available on GitHub (http://covasim.org) and PyPI (``pip install covasim``), and comes with comprehensive documentation, including tutorials (http://docs.covasim.org).
 
 
 .. figure:: fig_seir.png
@@ -111,7 +111,7 @@ The fundamental calculation that Covasim performs is to calculate the probabilit
    Basic Covasim disease model. The blue arrow shows the process of reinfection. :label:`seir`
 
 
-The first principle of Covasim's design philosophy is that "Common tasks should be simple" – for example, defining parameters, running a simulation, and plotting results. The following example illustrates this principle: it creates a simulation with a custom parameter value, runs it, and plots the results:
+The first principle of Covasim's design philosophy is that "Common tasks should be simple" – for example, defining parameters, running a simulation, and plotting results. The following example illustrates this principle; it creates a simulation with a custom parameter value, runs it, and plots the results:
 
 
 .. code-block:: python
@@ -120,9 +120,9 @@ The first principle of Covasim's design philosophy is that "Common tasks should 
    cv.Sim(pop_size=100e3).run().plot()
 
 
-The second principle of the design philosophy is "Uncommon tasks can't always be simple, but they still should be possible". Examples include writing a custom goodness-of-fit function or defining a new population structure. To some extent, the second principle is at odds with the first, since the more flexibility an interface has, typically the more complex it is as well.
+The second principle of Covasim's design philosophy is "Uncommon tasks can't always be simple, but they still should be possible." Examples include writing a custom goodness-of-fit function or defining a new population structure. To some extent, the second principle is at odds with the first, since the more flexibility an interface has, typically the more complex it is as well.
 
-To illustrate the tension between these two principles, the following code and Fig. :ref:`example` show the implementation and result of running two simulations to determine the impact of a custom intervention aimed at protecting the elderly:
+To illustrate the tension between these two principles, the following code shows how to run two simulations to determine the impact of a custom intervention aimed at protecting the elderly in Japan, with results shown in Fig. :ref:`example`:
 
 
 .. code-block:: python
@@ -138,11 +138,10 @@ To illustrate the tension between these two principles, the following code and F
    # Set custom parameters
    pars = dict(
        pop_type = 'hybrid', # More realistic population
-       location = 'japan', # Japan characteristics
+       location = 'japan', # Japan's population pyramid
        pop_size = 50e3, # Have 50,000 people total
        pop_infected = 100, # 100 infected people
        n_days = 90, # Run for 90 days
-       verbose = 0, # Do not print output
    )
 
    # Run multiple sims in parallel and plot key results
@@ -150,16 +149,16 @@ To illustrate the tension between these two principles, the following code and F
    s1 = cv.Sim(pars, label='Default')
    s2 = cv.Sim(pars, interventions=elderly, label=label)
    msim = cv.parallel(s1, s2)
-   fig = msim.plot(['cum_deaths', 'cum_infections'])
+   msim.plot(['cum_deaths', 'cum_infections'])
 
 
 .. figure:: fig_example.png
 
    Illustrative result of a simulation in Covasim focused on exploring an intervention for protecting the elderly. :label:`example`
 
-Similar design philosophies have been articulated for other projects, such as Grails :cite:`abdul2009groovy` [1]_.
+Similar design philosophies have been articulated by previously, such as for Grails :cite:`abdul2009groovy` among others [1]_.
 
-.. [1] Other similar philosophical statements include "The manifesto of Matplotlib is: simple and common tasks should be simple to perform provide options for more complex tasks" (`Data Processing Using Python <https://pt.coursera.org/lecture/python-data-processing/2-fundamentals-of-python-plotting-xMQeE>`__) and "Simple, common tasks should be simple to perform; Options should be provided to enable more complex tasks" (`Instrumental <https://instrumental-lib.readthedocs.io/en/stable/developer.html>`__).
+.. [1] Other similar philosophical statements include "The manifesto of Matplotlib is: simple and common tasks should be simple to perform; provide options for more complex tasks" (`Data Processing Using Python <https://pt.coursera.org/lecture/python-data-processing/2-fundamentals-of-python-plotting-xMQeE>`__) and "Simple, common tasks should be simple to perform; Options should be provided to enable more complex tasks" (`Instrumental <https://instrumental-lib.readthedocs.io/en/stable/developer.html>`__).
 
 
 
