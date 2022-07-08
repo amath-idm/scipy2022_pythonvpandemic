@@ -4,11 +4,9 @@ xmin = 0
 xmax = 10
 npts = 50
 noisevals = np.linspace(0, 1, 11)
-x = np.linspace(xmin, xmax, npts)
 
 def randwave(std):
-    np.random.seed()
-    a = np.cos(x)
+    a = np.cos(np.linspace(xmin, xmax, npts))
     b = np.random.randn(npts)
     return a + b*std
 
@@ -24,7 +22,7 @@ output = sc.parallelize(randwave, noisevals)
 # Save to files
 filenames = []
 for n,noiseval in enumerate(noisevals):
-    filename = f'noise{noiseval:0.1f}.obj'
+    filename = f'noise{n}.obj'
     sc.save(filename, output[n])
     filenames.append(filename)
 
